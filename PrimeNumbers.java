@@ -1,125 +1,160 @@
 
-package primenumbers;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PrimeNumbers {
   
-    public static void main(String[] args) {        
-        int min;            // variable to store the minimum number input
-        int max;            // variable to store the maximum number input 
-        
-        // continue loop while inputs are not valid
-        while(true){
-            System.out.println("Enter two numbers to see all the prime numbers between them");
-            // used for reading user input
-            Scanner sc = new Scanner(System.in);
+	// Function used to check input is a valid positive number 
+	public static int checkInput(String numInput) {
+		int num;
+		// Try to cast input to an integer
+		try {
+			num = Integer.parseInt(numInput); 
+			// If it is less than zero then input is invalid
+			if(num < 0) {
+				System.out.println("Please enter a number greater than zero");
+				return -1;
+			}	  
+		}
+		// If unable to cast then input is invalid
+		catch(Exception e) {
+			System.out.println("Please enter a valid integer");
+			return -1;
+		}
+		// Return the integer
+		return num;		
+	}
+	
+	// Boolean function used to compare the minimum and maximum numbers and make sure they are different
+	public static boolean compareNumbers(int min, int max) {
+		// Return false if the minimum is greater than the maximum
+		if(min > max){
+			System.out.println("Minimum cannot be greater than maximum");
+			return false;
+		}
+		// Return false if both numbers are the same
+		else if(min == max){
+			System.out.println("Minimum and maximum must be different");
+			return false;
+		}
+		// Else return true
+		return true;
+	}
+	
+    public static void main(String[] args) {      
+		// Variables to store the minimum and maximum numbers input
+        int min;            
+        int max;            
+		// If two arguements are supplied
+		if(args.length >= 2) {
+			// Check that both numbers are valid
+			min = checkInput(args[0]);
+			max = checkInput(args[1]);
+			// If either input is not valid then exit program
+			if(min == -1 || max == -1)  {
+				System.exit(0);
+			}
+			// If minimum number is greater than or equal to maximum number then exit program 
+			else if(!compareNumbers(min, max)){
+				System.exit(0);
+			}
+		}
+		// If one arguement is supplied assume minimum to be zero
+		else if(args.length == 1) {
+			min = 0;
+			max = checkInput(args[0]);
+			if(max == -1) {
+				System.exit(0);
+			}
+			else if(!compareNumbers(min, max)){
+				System.exit(0);
+			}
+		}
+		// Else no arguement supplied so ask user to enter number
+		else {
+			
+			System.out.println("Enter two numbers to see all the prime numbers between them");
+			// Continuous loop
+			while(true){
+				// Read in user input
+				Scanner sc = new Scanner(System.in);
 
-            // Read in minimum number
-            // continue looping while input is not valid
-            while(true){   
-                System.out.println("Enter a minimum number");
-                // read input as string
-                String input = sc.next();
-                // attempt to convert input to a number
-                try{
-                    min = Integer.parseInt(input); 
-                    // if number is greater than zero then break out of while loop
-                    if(min > 0){
-                        break;
-                    }
-                    System.out.println("Please enter a number greater than zero");
-                }
-                catch(Exception e){
-                    System.out.println("Please enter a valid number");
-                }
-            }
-            
-            // Read in maximum number
-            while(true){          
-                System.out.println("Enter a maximum number");
-                String input = sc.next();
-                try{
-                    max = Integer.parseInt(input); 
-                    if(max > 0){
-                        break;
-                    }
-                    System.out.println("Please enter a number greater than zero");
-                }
-                catch(Exception e){
-                    System.out.println("Please enter a valid number");
-                }
-             }
-
-            // check that minimum number is less thsn maximum number
-            if(min > max){
-                System.out.println("Start number cannot be greater than end number");
-            }
-            // check that the numbers are not the same
-            else if(min == max){
-                System.out.println("Start number and end number must be different");
-            }
-            // else both inputs are valid so break out of loop
-            else{
-                break;
-            }
-        }
-        
-        // arraylist to store the prime numbers between the minimum and maximum
+				// Read in minimum number
+				// Continue looping while input is not valid
+				while(true){   
+					System.out.println("Enter a minimum number");
+					// Check input is valid
+					min = checkInput(sc.next());
+					// If it is valid then break out of loop
+					if(min != -1) {
+						break;
+					}
+				}		
+				// Read in maximum number
+				while(true){          
+					System.out.println("Enter a maximum number");
+					max = checkInput(sc.next());
+					if(max != -1) {
+						break;
+					}
+				}
+				// If minimum number is less than maximum number then break out of loop
+				if(compareNumbers(min, max)) {
+					break;
+				}
+			}
+		}
+          
+        // Arraylist to store the prime numbers between the minimum and maximum
         List<Integer> primeNumbers = new ArrayList<>();
-        // loop through each number from the minimum up to the maximum
-        for(int i=min;i<= max;i++){
-            // if number is even
+        // Iterate through each number from the minimum up to the maximum
+        for(int i=min;i<= max;i++) {
+            // If number is even
             if(i%2 == 0){
-                // if it is 2 then add it to list of prime numbers
+                // If it is 2 then add it to list of prime numbers
                 if(i == 2){
                     primeNumbers.add(i);
                 }
             }
-            // else number is odd
+            // Else number is odd
             else{
-                // if it is 1 then add it to list of prime numbers
+                // If it is 1 then add it to list of prime numbers
                 if(i == 1){
                     primeNumbers.add(i);
                 }
                 else{
-                    // calculate the square root of the number
-                    double sqRoot = Math.sqrt(i);
-                    // check that the square root is not the square of another number
-                    if(sqRoot != Math.floor(sqRoot)){
-                        // floor it to ensure it is a whole number
-                        sqRoot = Math.floor(sqRoot);
-                        // variable to determine whether or not number is prime
-                        boolean isPrime = true;
-                        // start at 3 and continue up to the square root
-                        for(int j=3;j<= sqRoot;j++){
-                            // if j divides evenly into i then it is not prime so break out of loop
-                            if(i%j == 0){
-                                isPrime = false;
-                                break;
-                            }
-                        }
-                        // if number is still prime then add it to list of prime numbers
-                        if(isPrime){
-                            primeNumbers.add(i);
-                        }
-                    }   
+                    // Calculate the square root of the number and floor it to make it a whole number
+                    double sqRoot = Math.floor(Math.sqrt(i));
+                    // Variable to determine whether or not number is prime
+					boolean isPrime = true;
+					// Start at 3 and continue up to the square root
+					for(int j=3;j<= sqRoot;j++){
+						// If j divides evenly into i then it is not prime so break out of loop
+						if(i%j == 0){
+							isPrime = false;
+							break;
+						}
+					}
+					// If number is still prime then add it to list of prime numbers
+					if(isPrime){
+						primeNumbers.add(i);
+					}  
                 }
             }
         }
-        // show the number of prime numbers
+        // Show the number of prime numbers
         System.out.println("There are " + primeNumbers.size() + " prime numbers between " + min + " and " + max);
-        // loop through each prime number
+        // Iterate through each prime number
         for(int i=0;i<= primeNumbers.size()-1;i++){
-            // if index is not the final index then print number followed by a comma
-            if(i< primeNumbers.size()){
+            // If it is not the final number in list then print number followed by a comma
+            if(i < primeNumbers.size()-1){
                 System.out.print(primeNumbers.get(i) + ", ");
             }
-            // else it is the final index so just print number
+            // Else it is the final number so print it without a comma
             else{
                 System.out.print(primeNumbers.get(i));
             }
-        }   
+        }	
     }
 }
